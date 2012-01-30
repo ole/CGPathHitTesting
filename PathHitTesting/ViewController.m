@@ -17,6 +17,7 @@
 @property (nonatomic, strong) Shape *selectedShape;
 
 - (void)addShape:(Shape *)newShape;
+- (Shape *)hitTest:(CGPoint)point;
 
 @end
 
@@ -102,29 +103,46 @@
 }
 
 
+#pragma mark - Hit Testing
+
+- (Shape *)hitTest:(CGPoint)point
+{
+    __block Shape *hitShape = nil;
+    [self.shapes enumerateObjectsUsingBlock:^(id shape, NSUInteger idx, BOOL *stop) {
+        if ([shape containsPoint:point]) {
+            hitShape = [self.shapes objectAtIndex:idx];
+            *stop = YES;
+        }
+    }];
+    return hitShape;
+}
+
+
 #pragma mark - Touch handling
 
 - (void)tapDetected:(UITapGestureRecognizer *)tapRecognizer
 {
     CGPoint tapLocation = [tapRecognizer locationInView:self.drawingView];
-    [self.shapes enumerateObjectsUsingBlock:^(id shape, NSUInteger idx, BOOL *stop) {
-        if ([shape containsPoint:tapLocation]) {
-            Shape *hitShape = [self.shapes objectAtIndex:idx];
-            self.selectedShape = hitShape;
-            NSLog(@"Hit shape: %@", hitShape);
-            *stop = YES;
-        } else {
-            self.selectedShape = nil;
-        }
-    }];
+    self.selectedShape = [self hitTest:tapLocation];
 }
 
 - (void)panDetected:(UIPanGestureRecognizer *)panRecognizer
 {
-    CGPoint translation = [panRecognizer translationInView:self.drawingView];
-    [self.selectedShape moveBy:translation];
-    [self.drawingView setNeedsDisplay];
-    [panRecognizer setTranslation:CGPointZero inView:self.drawingView];
+    switch (panRecognizer.state) {
+        case UIGestureRecognizerStateBegan: {
+            CGPoint tapLocation = [panRecognizer locationInView:self.drawingView];
+            self.selectedShape = [self hitTest:tapLocation];
+            break;
+        }
+        case UIGestureRecognizerStateChanged: {
+            CGPoint translation = [panRecognizer translationInView:self.drawingView];
+            [self.selectedShape moveBy:translation];
+            [self.drawingView setNeedsDisplay];
+            [panRecognizer setTranslation:CGPointZero inView:self.drawingView];
+        }
+        default:
+            break;
+    }
 }
 
 @end
