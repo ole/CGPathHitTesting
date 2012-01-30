@@ -10,6 +10,10 @@
 
 @interface Shape ()
 
+@property (nonatomic, strong) UIBezierPath *tapTarget;
+
+- (UIBezierPath *)tapTargetForPath:(UIBezierPath *)path;
+
 + (ShapeType)randomShapeType;
 + (CGRect)randomRectInBounds:(CGRect)maxBounds;
 + (UIColor *)randomColor;
@@ -22,6 +26,8 @@
 
 @synthesize path = _path;
 @synthesize lineColor = _lineColor;
+@synthesize tapTarget = _tapTarget;
+
 
 + (id)randomShapeInBounds:(CGRect)maxBounds
 {
@@ -57,6 +63,7 @@
     if (self != nil) {
         _path = path;
         _lineColor = lineColor;
+        _tapTarget = [self tapTargetForPath:_path];
     }
     return self;
 }
@@ -74,6 +81,31 @@
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"<Shape: %p - Bounds: %@ - Color: %@>", self, NSStringFromCGRect(self.path.bounds), self.lineColor   ];
+}
+
+
+#pragma mark - Hit Testing
+
+- (UIBezierPath *)tapTargetForPath:(UIBezierPath *)path
+{
+    if (path == nil) {
+        return nil;
+    }
+    
+    CGPathRef tapTargetPath = CGPathCreateCopyByStrokingPath(path.CGPath, NULL, fmaxf(25.0f, path.lineWidth), path.lineCapStyle, path.lineJoinStyle, path.miterLimit);
+    
+    if (tapTargetPath == NULL) {
+        return nil;
+    }
+    
+    UIBezierPath *tapTarget = [UIBezierPath bezierPathWithCGPath:tapTargetPath];
+    CGPathRelease(tapTargetPath);
+    return tapTarget;
+}
+
+- (BOOL)containsPoint:(CGPoint)point
+{
+    return [self.tapTarget containsPoint:point];
 }
 
 

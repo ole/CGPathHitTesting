@@ -14,7 +14,6 @@
 @interface ViewController ()
 
 @property (nonatomic, strong) NSMutableArray *shapes;
-@property (nonatomic, strong) NSMutableArray *tapTargets;
 
 - (void)addShape:(Shape *)newShape;
 
@@ -26,7 +25,6 @@
 
 @synthesize drawingView = _drawingView;
 @synthesize shapes = _shapes;
-@synthesize tapTargets = _tapTargets;
 
 
 - (void)didReceiveMemoryWarning
@@ -43,7 +41,6 @@
 	// Do any additional setup after loading the view, typically from a nib.
     
     self.shapes = [NSMutableArray array];
-    self.tapTargets = [NSMutableArray array];
     
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDetected:)];
     [self.drawingView addGestureRecognizer:tapRecognizer];
@@ -95,16 +92,8 @@
 
 - (void)addShape:(Shape *)newShape
 {
-    CGPathRef tapTargetPath = CGPathCreateCopyByStrokingPath(newShape.path.CGPath, NULL, fmaxf(25.0f, newShape.path.lineWidth), newShape.path.lineCapStyle, newShape.path.lineJoinStyle, newShape.path.miterLimit);
-    if (tapTargetPath != NULL) {
-        UIBezierPath *tapTarget = [UIBezierPath bezierPathWithCGPath:tapTargetPath];
-        CGPathRelease(tapTargetPath);
-
-        [self.shapes addObject:newShape];
-        [self.tapTargets addObject:tapTarget];
-        self.drawingView.shapes = self.shapes;
-    }
-    
+    [self.shapes addObject:newShape];
+    self.drawingView.shapes = self.shapes;
 }
 
 
@@ -113,14 +102,13 @@
 - (void)tapDetected:(UITapGestureRecognizer *)tapRecognizer
 {
     CGPoint tapLocation = [tapRecognizer locationInView:self.drawingView];
-    [self.tapTargets enumerateObjectsUsingBlock:^(id tapTarget, NSUInteger idx, BOOL *stop) {
-        if ([tapTarget containsPoint:tapLocation]) {
+    [self.shapes enumerateObjectsUsingBlock:^(id shape, NSUInteger idx, BOOL *stop) {
+        if ([shape containsPoint:tapLocation]) {
             Shape *hitShape = [self.shapes objectAtIndex:idx];
             NSLog(@"Hit shape: %@", hitShape);
             *stop = YES;
         }
     }];
 }
-
 
 @end
