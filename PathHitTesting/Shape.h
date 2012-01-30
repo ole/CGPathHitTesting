@@ -22,6 +22,7 @@ typedef enum {
 - (id)initWithPath:(UIBezierPath *)path lineColor:(UIColor *)lineColor;
 
 - (BOOL)containsPoint:(CGPoint)point;
+- (void)moveBy:(CGPoint)delta;
 
 @property (nonatomic, strong) UIBezierPath *path;
 @property (nonatomic, strong) UIColor *lineColor;

@@ -109,6 +109,17 @@
 }
 
 
+#pragma mark - Modifying Shapes
+
+- (void)moveBy:(CGPoint)delta
+{
+    CGAffineTransform transform = CGAffineTransformMakeTranslation(delta.x, delta.y);
+    [self.path applyTransform:transform];
+    [self.tapTarget applyTransform:transform];
+}
+
+
+
 #pragma mark - Random Shape Generator Methods
 
 + (ShapeType)randomShapeType

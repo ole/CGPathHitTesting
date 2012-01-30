@@ -14,6 +14,7 @@
 @interface ViewController ()
 
 @property (nonatomic, strong) NSMutableArray *shapes;
+@property (nonatomic, strong) Shape *selectedShape;
 
 - (void)addShape:(Shape *)newShape;
 
@@ -25,6 +26,7 @@
 
 @synthesize drawingView = _drawingView;
 @synthesize shapes = _shapes;
+@synthesize selectedShape = _selectedShape;
 
 
 - (void)didReceiveMemoryWarning
@@ -44,6 +46,9 @@
     
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDetected:)];
     [self.drawingView addGestureRecognizer:tapRecognizer];
+    
+    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panDetected:)];
+    [self.drawingView addGestureRecognizer:panRecognizer];
 }
 
 - (void)viewDidUnload
@@ -105,10 +110,21 @@
     [self.shapes enumerateObjectsUsingBlock:^(id shape, NSUInteger idx, BOOL *stop) {
         if ([shape containsPoint:tapLocation]) {
             Shape *hitShape = [self.shapes objectAtIndex:idx];
+            self.selectedShape = hitShape;
             NSLog(@"Hit shape: %@", hitShape);
             *stop = YES;
+        } else {
+            self.selectedShape = nil;
         }
     }];
+}
+
+- (void)panDetected:(UIPanGestureRecognizer *)panRecognizer
+{
+    CGPoint translation = [panRecognizer translationInView:self.drawingView];
+    [self.selectedShape moveBy:translation];
+    [self.drawingView setNeedsDisplay];
+    [panRecognizer setTranslation:CGPointZero inView:self.drawingView];
 }
 
 @end
