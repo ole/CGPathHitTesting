@@ -16,6 +16,7 @@
 		5D892D4314D6F72C005B3273 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D892D4114D6F72C005B3273 /* MainStoryboard.storyboard */; };
 		5D892D4614D6F72C005B3273 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D892D4514D6F72C005B3273 /* ViewController.m */; };
 		5D892D4E14D6F77E005B3273 /* DrawingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D892D4D14D6F77E005B3273 /* DrawingView.m */; };
+		5D892D5414D70066005B3273 /* Shape.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D892D5314D70066005B3273 /* Shape.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,8 @@
 		5D892D4514D6F72C005B3273 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		5D892D4C14D6F77E005B3273 /* DrawingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingView.h; sourceTree = "<group>"; };
 		5D892D4D14D6F77E005B3273 /* DrawingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingView.m; sourceTree = "<group>"; };
+		5D892D5214D70066005B3273 /* Shape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shape.h; sourceTree = "<group>"; };
+		5D892D5314D70066005B3273 /* Shape.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shape.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +91,8 @@
 				5D892D3614D6F72B005B3273 /* Supporting Files */,
 				5D892D4C14D6F77E005B3273 /* DrawingView.h */,
 				5D892D4D14D6F77E005B3273 /* DrawingView.m */,
+				5D892D5214D70066005B3273 /* Shape.h */,
+				5D892D5314D70066005B3273 /* Shape.m */,
 			);
 			path = PathHitTesting;
 			sourceTree = "<group>";
@@ -170,6 +175,7 @@
 				5D892D4014D6F72C005B3273 /* AppDelegate.m in Sources */,
 				5D892D4614D6F72C005B3273 /* ViewController.m in Sources */,
 				5D892D4E14D6F77E005B3273 /* DrawingView.m in Sources */,
+				5D892D5414D70066005B3273 /* Shape.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
