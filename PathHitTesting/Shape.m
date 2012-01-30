@@ -69,6 +69,16 @@
 }
 
 
+#pragma mark - Description
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<Shape: %p - Bounds: %@ - Color: %@>", self, NSStringFromCGRect(self.path.bounds), self.lineColor   ];
+}
+
+
+#pragma mark - Random Shape Generator Methods
+
 + (ShapeType)randomShapeType
 {
     return arc4random_uniform(SHAPE_TYPE_COUNT);
