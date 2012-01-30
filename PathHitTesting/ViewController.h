@@ -12,6 +12,8 @@
 
 @interface ViewController : UIViewController
 
-@property (nonatomic, weak, readonly) DrawingView *drawingView;
+@property (weak, nonatomic) IBOutlet DrawingView *drawingView;
+
+- (IBAction)addButtonTapped:(id)sender;
 
 @end

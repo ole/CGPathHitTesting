@@ -8,12 +8,15 @@
 
 #import "ViewController.h"
 #import "DrawingView.h"
+#import "Shape.h"
 
 
 @interface ViewController ()
 
-@property (nonatomic, strong) NSMutableArray *paths;
+@property (nonatomic, strong) NSMutableArray *shapes;
 @property (nonatomic, strong) NSMutableArray *tapTargets;
+
+- (void)addShape:(Shape *)newShape;
 
 @end
 
@@ -21,9 +24,9 @@
 
 @implementation ViewController
 
-@dynamic drawingView;
-@synthesize paths;
-@synthesize tapTargets;
+@synthesize drawingView = _drawingView;
+@synthesize shapes = _shapes;
+@synthesize tapTargets = _tapTargets;
 
 
 - (void)didReceiveMemoryWarning
@@ -39,21 +42,8 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    self.paths = [NSMutableArray array];
+    self.shapes = [NSMutableArray array];
     self.tapTargets = [NSMutableArray array];
-    
-    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(100, 100, 500, 500)];
-    path.lineWidth = 5.0f;
-    
-    CGPathRef tapTargetPath = CGPathCreateCopyByStrokingPath(path.CGPath, NULL, fmaxf(25.0f, path.lineWidth), path.lineCapStyle, path.lineJoinStyle, path.miterLimit);
-    if (tapTargetPath != NULL) {
-        UIBezierPath *tapTarget = [UIBezierPath bezierPathWithCGPath:tapTargetPath];
-        CGPathRelease(tapTargetPath);
-        [self.tapTargets addObject:tapTarget];
-        [self.paths addObject:path];
-    }
-    
-    self.drawingView.paths = self.paths;
     
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDetected:)];
     [self.drawingView addGestureRecognizer:tapRecognizer];
@@ -61,6 +51,7 @@
 
 - (void)viewDidUnload
 {
+    [self setDrawingView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -93,21 +84,43 @@
 }
 
 
-- (DrawingView *)drawingView
+#pragma mark - Shape management
+
+- (IBAction)addButtonTapped:(id)sender 
 {
-    return (DrawingView *)self.view;
+    CGRect maxBounds = CGRectInset(self.drawingView.bounds, 10.0f, 10.0f);
+    Shape *newShape = [Shape randomShapeInBounds:maxBounds];
+    [self addShape:newShape];
 }
+
+- (void)addShape:(Shape *)newShape
+{
+    CGPathRef tapTargetPath = CGPathCreateCopyByStrokingPath(newShape.path.CGPath, NULL, fmaxf(25.0f, newShape.path.lineWidth), newShape.path.lineCapStyle, newShape.path.lineJoinStyle, newShape.path.miterLimit);
+    if (tapTargetPath != NULL) {
+        UIBezierPath *tapTarget = [UIBezierPath bezierPathWithCGPath:tapTargetPath];
+        CGPathRelease(tapTargetPath);
+
+        [self.shapes addObject:newShape];
+        [self.tapTargets addObject:tapTarget];
+        self.drawingView.shapes = self.shapes;
+    }
+    
+}
+
+
+#pragma mark - Touch handling
 
 - (void)tapDetected:(UITapGestureRecognizer *)tapRecognizer
 {
     CGPoint tapLocation = [tapRecognizer locationInView:self.drawingView];
     [self.tapTargets enumerateObjectsUsingBlock:^(id tapTarget, NSUInteger idx, BOOL *stop) {
         if ([tapTarget containsPoint:tapLocation]) {
-            UIBezierPath *hitShape = [self.paths objectAtIndex:idx];
-            NSLog(@"Hit path: %@", hitShape);
+            Shape *hitShape = [self.shapes objectAtIndex:idx];
+            NSLog(@"Hit shape: %@", hitShape);
             *stop = YES;
         }
     }];
 }
+
 
 @end

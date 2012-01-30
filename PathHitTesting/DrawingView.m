@@ -7,10 +7,12 @@
 //
 
 #import "DrawingView.h"
+#import "Shape.h"
+
 
 @implementation DrawingView
 
-@synthesize paths;
+@synthesize shapes = _shapes;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -23,9 +25,16 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    for (UIBezierPath *path in self.paths) {
-        [path stroke];
+    for (Shape *shape in self.shapes) {
+        [shape.lineColor setStroke];
+        [shape.path stroke];
     }
+}
+
+- (void)setShapes:(NSArray *)shapes
+{
+    _shapes = shapes;
+    [self setNeedsDisplay];
 }
 
 @end

@@ -10,6 +10,6 @@
 
 @interface DrawingView : UIView
 
-@property (nonatomic, strong) NSArray *paths;
+@property (nonatomic, strong) NSArray *shapes;
 
 @end
