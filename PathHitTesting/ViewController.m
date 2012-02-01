@@ -13,10 +13,11 @@
 @interface ViewController ()
 
 @property (nonatomic, strong) NSMutableArray *shapes;
-@property (nonatomic, strong) Shape *selectedShape;
+@property (nonatomic, assign) NSUInteger selectedShapeIndex;
+@property (nonatomic, readonly) Shape *selectedShape;
 
 - (void)addShape:(Shape *)newShape;
-- (Shape *)hitTest:(CGPoint)point;
+- (NSUInteger)hitTest:(CGPoint)point;
 
 @end
 
@@ -26,7 +27,8 @@
 
 @synthesize drawingView = _drawingView;
 @synthesize shapes = _shapes;
-@synthesize selectedShape = _selectedShape;
+@synthesize selectedShapeIndex = _selectedShapeIndex;
+@dynamic selectedShape;
 
 
 - (void)didReceiveMemoryWarning
@@ -42,6 +44,7 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
+    _selectedShapeIndex = NSNotFound;
     self.shapes = [NSMutableArray array];
     
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDetected:)];
@@ -103,28 +106,36 @@
     [self.drawingView reloadDataInRect:newShape.totalBounds];
 }
 
-- (void)setSelectedShape:(Shape *)selectedShape
+- (void)setSelectedShapeIndex:(NSUInteger)selectedShapeIndex
 {
     CGRect oldSelectionBounds = self.selectedShape.totalBounds;
-    CGRect newSelectionBounds = selectedShape.totalBounds;
+    _selectedShapeIndex = selectedShapeIndex;
+    CGRect newSelectionBounds = self.selectedShape.totalBounds;
     CGRect rectToRedraw = CGRectUnion(oldSelectionBounds, newSelectionBounds);
-    _selectedShape = selectedShape;
     [_drawingView setNeedsDisplayInRect:rectToRedraw];
+}
+
+- (Shape *)selectedShape
+{
+    if (_selectedShapeIndex == NSNotFound) {
+        return nil;
+    }
+    return [self.shapes objectAtIndex:_selectedShapeIndex];
 }
 
 
 #pragma mark - Hit Testing
 
-- (Shape *)hitTest:(CGPoint)point
+- (NSUInteger)hitTest:(CGPoint)point
 {
-    __block Shape *hitShape = nil;
+    __block NSUInteger hitShapeIndex = NSNotFound;
     [self.shapes enumerateObjectsUsingBlock:^(id shape, NSUInteger idx, BOOL *stop) {
         if ([shape containsPoint:point]) {
-            hitShape = [self.shapes objectAtIndex:idx];
+            hitShapeIndex = idx;
             *stop = YES;
         }
     }];
-    return hitShape;
+    return hitShapeIndex;
 }
 
 
@@ -133,7 +144,7 @@
 - (void)tapDetected:(UITapGestureRecognizer *)tapRecognizer
 {
     CGPoint tapLocation = [tapRecognizer locationInView:self.drawingView];
-    self.selectedShape = [self hitTest:tapLocation];
+    self.selectedShapeIndex = [self hitTest:tapLocation];
 }
 
 - (void)panDetected:(UIPanGestureRecognizer *)panRecognizer
@@ -141,7 +152,7 @@
     switch (panRecognizer.state) {
         case UIGestureRecognizerStateBegan: {
             CGPoint tapLocation = [panRecognizer locationInView:self.drawingView];
-            self.selectedShape = [self hitTest:tapLocation];
+            self.selectedShapeIndex = [self hitTest:tapLocation];
             break;
         }
         case UIGestureRecognizerStateChanged: {
@@ -181,7 +192,7 @@
 
 - (NSUInteger)indexOfSelectedShapeInDrawingView:(DrawingView *)drawingView
 {
-    return [self.shapes indexOfObject:self.selectedShape];
+    return self.selectedShapeIndex;
 }
 
 @end
