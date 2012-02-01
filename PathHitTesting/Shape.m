@@ -18,6 +18,7 @@
 + (CGRect)randomRectInBounds:(CGRect)maxBounds;
 + (UIColor *)randomColor;
 + (CGFloat)randomLineWidth;
++ (UIBezierPath *)houseInRect:(CGRect)bounds;
 
 @end
 
@@ -41,6 +42,9 @@
             break;
         case ShapeTypeEllipse:
             path = [UIBezierPath bezierPathWithOvalInRect:bounds];
+            break;
+        case ShapeTypeHouse:
+            path = [self houseInRect:bounds];
             break;
         default:
             path = [UIBezierPath bezierPathWithRect:bounds];
@@ -185,6 +189,37 @@
     uint32_t maxLineWidth = 15;
     CGFloat lineWidth = arc4random_uniform(maxLineWidth) + 1.0f; // avoid lineWidth == 0.0f
     return lineWidth;
+}
+
++ (UIBezierPath *)houseInRect:(CGRect)bounds
+{
+    CGPoint bottomLeft 	= CGPointMake(CGRectGetMinX(bounds), CGRectGetMinY(bounds));
+    CGPoint topLeft		= CGPointMake(CGRectGetMinX(bounds), CGRectGetMinY(bounds) + CGRectGetHeight(bounds) * 2.0f/3.0f);
+    CGPoint bottomRight = CGPointMake(CGRectGetMaxX(bounds), CGRectGetMinY(bounds));
+    CGPoint topRight	= CGPointMake(CGRectGetMaxX(bounds), CGRectGetMinY(bounds) + CGRectGetHeight(bounds) * 2.0f/3.0f);
+    CGPoint roofTip		= CGPointMake(CGRectGetMidX(bounds), CGRectGetMaxY(bounds));
+    
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    [path moveToPoint:bottomLeft];
+    [path addLineToPoint:topLeft];
+    [path addLineToPoint:roofTip];
+    [path addLineToPoint:topRight];
+    [path addLineToPoint:topLeft];
+    [path addLineToPoint:bottomRight];
+    [path addLineToPoint:topRight];
+    [path addLineToPoint:bottomLeft];
+    [path addLineToPoint:bottomRight];
+    
+    path.lineJoinStyle = kCGLineJoinBevel;
+
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    transform = CGAffineTransformTranslate(transform, bounds.origin.x, bounds.origin.y);
+    transform = CGAffineTransformTranslate(transform, 0.0, bounds.size.height);
+    transform = CGAffineTransformScale(transform, 1.0f, -1.0f);
+    transform = CGAffineTransformTranslate(transform, -bounds.origin.x, -bounds.origin.y);
+    [path applyTransform:transform];
+    
+    return path;
 }
 
 @end
