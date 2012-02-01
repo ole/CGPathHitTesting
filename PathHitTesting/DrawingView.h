@@ -27,4 +27,7 @@
 - (UIBezierPath *)drawingView:(DrawingView *)drawingView pathForShapeAtIndex:(NSUInteger)shapeIndex;
 - (UIColor *)drawingView:(DrawingView *)drawingView lineColorForShapeAtIndex:(NSUInteger)shapeIndex;
 
+@optional
+- (NSUInteger)indexOfSelectedShapeInDrawingView:(DrawingView *)drawingView;
+
 @end

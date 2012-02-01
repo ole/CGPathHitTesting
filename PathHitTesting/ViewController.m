@@ -103,6 +103,15 @@
     [self.drawingView reloadDataInRect:newShape.totalBounds];
 }
 
+- (void)setSelectedShape:(Shape *)selectedShape
+{
+    CGRect oldSelectionBounds = self.selectedShape.totalBounds;
+    CGRect newSelectionBounds = selectedShape.totalBounds;
+    CGRect rectToRedraw = CGRectUnion(oldSelectionBounds, newSelectionBounds);
+    _selectedShape = selectedShape;
+    [_drawingView setNeedsDisplayInRect:rectToRedraw];
+}
+
 
 #pragma mark - Hit Testing
 
@@ -168,6 +177,11 @@
 {
     Shape *shape = [self.shapes objectAtIndex:shapeIndex];
     return shape.lineColor;
+}
+
+- (NSUInteger)indexOfSelectedShapeInDrawingView:(DrawingView *)drawingView
+{
+    return [self.shapes indexOfObject:self.selectedShape];
 }
 
 @end
