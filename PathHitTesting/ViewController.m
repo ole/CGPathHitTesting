@@ -129,7 +129,7 @@
 - (NSUInteger)hitTest:(CGPoint)point
 {
     __block NSUInteger hitShapeIndex = NSNotFound;
-    [self.shapes enumerateObjectsUsingBlock:^(id shape, NSUInteger idx, BOOL *stop) {
+    [self.shapes enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id shape, NSUInteger idx, BOOL *stop) {
         if ([shape containsPoint:point]) {
             hitShapeIndex = idx;
             *stop = YES;
