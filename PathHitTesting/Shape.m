@@ -27,6 +27,7 @@
 @synthesize path = _path;
 @synthesize lineColor = _lineColor;
 @synthesize tapTarget = _tapTarget;
+@dynamic totalBounds;
 
 
 + (id)randomShapeInBounds:(CGRect)maxBounds
@@ -109,6 +110,18 @@
 }
 
 
+#pragma mark - Bounds
+
+- (CGRect)totalBounds
+{
+    if (self.path == nil) {
+        return CGRectZero;
+    }
+    
+    return CGRectInset(self.path.bounds, -self.path.lineWidth, -self.path.lineWidth);
+}
+
+
 #pragma mark - Modifying Shapes
 
 - (void)moveBy:(CGPoint)delta
@@ -129,21 +142,26 @@
 
 + (CGRect)randomRectInBounds:(CGRect)maxBounds
 {
-    uint32_t minWidth = 44;
-    uint32_t minHeight = 44;
-    
     CGRect normalizedBounds = CGRectStandardize(maxBounds);
     uint32_t minOriginX = normalizedBounds.origin.x;
     uint32_t minOriginY = normalizedBounds.origin.y;
-    uint32_t maxWidth = normalizedBounds.size.width;
-    uint32_t maxHeight = normalizedBounds.size.height;
+    uint32_t minWidth = 44;
+    uint32_t minHeight = 44;
+
+    uint32_t maxOriginX = normalizedBounds.size.width - minWidth;
+    uint32_t maxOriginY = normalizedBounds.size.height - minHeight;
+
+    uint32_t originX = arc4random_uniform(maxOriginX - minOriginX) + minOriginX;
+    uint32_t originY = arc4random_uniform(maxOriginY - minOriginY) + minOriginY;
     
-    uint32_t originX = arc4random_uniform(maxWidth - minWidth) + minOriginX;
-    uint32_t originY = arc4random_uniform(maxHeight - minHeight) + minOriginY;
-    uint32_t width = arc4random_uniform(maxWidth - minWidth - originX) + minWidth;
-    uint32_t height = arc4random_uniform(maxHeight - minHeight - originY) + minHeight;
+    uint32_t maxWidth = normalizedBounds.size.width - originX;
+    uint32_t maxHeight = normalizedBounds.size.height - originY;
+
+    uint32_t width = arc4random_uniform(maxWidth - minWidth) + minWidth;
+    uint32_t height = arc4random_uniform(maxHeight - minHeight) + minHeight;
     
-    return CGRectMake(originX, originY, width, height);
+    CGRect randomRect = CGRectMake(originX, originY, width, height);
+    return randomRect;
 }
 
 + (UIColor *)randomColor
