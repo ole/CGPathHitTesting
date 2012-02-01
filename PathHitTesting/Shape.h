@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-    ShapeTypeRect = 1,
+    ShapeTypeRect,
     ShapeTypeEllipse,
     SHAPE_TYPE_COUNT
 } ShapeType;
