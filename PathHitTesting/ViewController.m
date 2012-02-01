@@ -26,6 +26,7 @@
 @implementation ViewController
 
 @synthesize drawingView = _drawingView;
+@synthesize deleteShapeButton = _deleteShapeButton;
 @synthesize shapes = _shapes;
 @synthesize selectedShapeIndex = _selectedShapeIndex;
 @dynamic selectedShape;
@@ -59,6 +60,7 @@
 - (void)viewDidUnload
 {
     [self setDrawingView:nil];
+    [self setDeleteShapeButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -106,13 +108,29 @@
     [self.drawingView reloadDataInRect:newShape.totalBounds];
 }
 
+- (IBAction)deleteButtonTapped:(id)sender 
+{
+    if (self.selectedShapeIndex == NSNotFound) {
+        return;
+    }
+    
+    CGRect rectToRedraw = self.selectedShape.totalBounds;
+    [self.shapes removeObjectAtIndex:self.selectedShapeIndex];
+    self.selectedShapeIndex = NSNotFound;
+    [self.drawingView reloadDataInRect:rectToRedraw];
+}
+
 - (void)setSelectedShapeIndex:(NSUInteger)selectedShapeIndex
 {
-    CGRect oldSelectionBounds = self.selectedShape.totalBounds;
+    CGRect oldSelectionBounds = CGRectZero;
+    if (_selectedShapeIndex < [self.shapes count]) {
+        oldSelectionBounds = self.selectedShape.totalBounds;
+    }
     _selectedShapeIndex = selectedShapeIndex;
     CGRect newSelectionBounds = self.selectedShape.totalBounds;
     CGRect rectToRedraw = CGRectUnion(oldSelectionBounds, newSelectionBounds);
     [_drawingView setNeedsDisplayInRect:rectToRedraw];
+    self.deleteShapeButton.enabled = (_selectedShapeIndex != NSNotFound);
 }
 
 - (Shape *)selectedShape

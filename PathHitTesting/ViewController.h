@@ -12,7 +12,9 @@
 @interface ViewController : UIViewController <DrawingViewDataSource>
 
 @property (weak, nonatomic) IBOutlet DrawingView *drawingView;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *deleteShapeButton;
 
 - (IBAction)addButtonTapped:(id)sender;
+- (IBAction)deleteButtonTapped:(id)sender;
 
 @end

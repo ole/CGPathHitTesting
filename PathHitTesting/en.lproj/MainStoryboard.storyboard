@@ -31,6 +31,11 @@
                                                 <action selector="addButtonTapped:" destination="2" id="e3d-JM-kd1"/>
                                             </connections>
                                         </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Delete Selected Shape" id="UA9-66-vii">
+                                            <connections>
+                                                <action selector="deleteButtonTapped:" destination="2" id="T4i-xg-cbo"/>
+                                            </connections>
+                                        </barButtonItem>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
@@ -38,6 +43,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
+                        <outlet property="deleteShapeButton" destination="UA9-66-vii" id="8fk-CG-KrI"/>
                         <outlet property="drawingView" destination="8XG-JP-5mD" id="z9f-Yl-EaZ"/>
                     </connections>
                 </viewController>
@@ -55,6 +61,8 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ViewController.h"/>
             <relationships>
                 <relationship kind="action" name="addButtonTapped:"/>
+                <relationship kind="action" name="deleteButtonTapped:"/>
+                <relationship kind="outlet" name="deleteShapeButton" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="drawingView" candidateClass="DrawingView"/>
             </relationships>
         </class>
