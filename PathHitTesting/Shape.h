@@ -26,5 +26,6 @@ typedef enum {
 
 @property (nonatomic, strong) UIBezierPath *path;
 @property (nonatomic, strong) UIColor *lineColor;
+@property (nonatomic, assign, readonly) CGRect totalBounds;
 
 @end

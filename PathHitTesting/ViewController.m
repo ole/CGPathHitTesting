@@ -49,6 +49,8 @@
     
     UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panDetected:)];
     [self.drawingView addGestureRecognizer:panRecognizer];
+    
+    [self.drawingView reloadData];
 }
 
 - (void)viewDidUnload
@@ -98,7 +100,7 @@
 - (void)addShape:(Shape *)newShape
 {
     [self.shapes addObject:newShape];
-    [self.drawingView reloadData];
+    [self.drawingView reloadDataInRect:newShape.totalBounds];
 }
 
 
@@ -135,8 +137,12 @@
         }
         case UIGestureRecognizerStateChanged: {
             CGPoint translation = [panRecognizer translationInView:self.drawingView];
+            CGRect originalBounds = self.selectedShape.totalBounds;
+            CGRect newBounds = CGRectApplyAffineTransform(originalBounds, CGAffineTransformMakeTranslation(translation.x, translation.y));
+            CGRect rectToRedraw = CGRectUnion(originalBounds, newBounds);
+
             [self.selectedShape moveBy:translation];
-            [self.drawingView setNeedsDisplay];
+            [self.drawingView reloadDataInRect:rectToRedraw];
             [panRecognizer setTranslation:CGPointZero inView:self.drawingView];
         }
         default:

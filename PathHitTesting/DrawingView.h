@@ -15,6 +15,7 @@
 @property (nonatomic, weak) IBOutlet id <DrawingViewDataSource> dataSource;
 
 - (void)reloadData;
+- (void)reloadDataInRect:(CGRect)rect;
 
 @end
 
