@@ -7,7 +7,6 @@
 //
 
 #import "ViewController.h"
-#import "DrawingView.h"
 #import "Shape.h"
 
 
@@ -99,7 +98,7 @@
 - (void)addShape:(Shape *)newShape
 {
     [self.shapes addObject:newShape];
-    self.drawingView.shapes = self.shapes;
+    [self.drawingView reloadData];
 }
 
 
@@ -143,6 +142,26 @@
         default:
             break;
     }
+}
+
+
+#pragma mark - DrawingViewDataSource
+
+- (NSUInteger)numberOfShapesInDrawingView:(DrawingView *)drawingView
+{
+    return [self.shapes count];
+}
+
+- (UIBezierPath *)drawingView:(DrawingView *)drawingView pathForShapeAtIndex:(NSUInteger)shapeIndex
+{
+    Shape *shape = [self.shapes objectAtIndex:shapeIndex];
+    return shape.path;
+}
+
+- (UIColor *)drawingView:(DrawingView *)drawingView lineColorForShapeAtIndex:(NSUInteger)shapeIndex
+{
+    Shape *shape = [self.shapes objectAtIndex:shapeIndex];
+    return shape.lineColor;
 }
 
 @end

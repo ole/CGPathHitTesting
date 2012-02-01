@@ -7,10 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DrawingView.h"
 
-@class DrawingView;
-
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <DrawingViewDataSource>
 
 @property (weak, nonatomic) IBOutlet DrawingView *drawingView;
 

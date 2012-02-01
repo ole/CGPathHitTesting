@@ -8,8 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol DrawingViewDataSource;
+
 @interface DrawingView : UIView
 
-@property (nonatomic, strong) NSArray *shapes;
+@property (nonatomic, weak) IBOutlet id <DrawingViewDataSource> dataSource;
+
+- (void)reloadData;
+
+@end
+
+
+@protocol DrawingViewDataSource <NSObject>
+
+@required
+- (NSUInteger)numberOfShapesInDrawingView:(DrawingView *)drawingView;
+- (UIBezierPath *)drawingView:(DrawingView *)drawingView pathForShapeAtIndex:(NSUInteger)shapeIndex;
+- (UIColor *)drawingView:(DrawingView *)drawingView lineColorForShapeAtIndex:(NSUInteger)shapeIndex;
 
 @end

@@ -12,29 +12,23 @@
 
 @implementation DrawingView
 
-@synthesize shapes = _shapes;
+@synthesize dataSource = _dataSource;
 
-- (id)initWithFrame:(CGRect)frame
+- (void)reloadData
 {
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
+    [self setNeedsDisplay];
 }
 
 - (void)drawRect:(CGRect)rect
 {
-    for (Shape *shape in self.shapes) {
-        [shape.lineColor setStroke];
-        [shape.path stroke];
+    NSUInteger numberOfShapes = [self.dataSource numberOfShapesInDrawingView:self];
+    for (NSUInteger shapeIndex = 0; shapeIndex < numberOfShapes; shapeIndex++) {
+        UIBezierPath *path = [self.dataSource drawingView:self pathForShapeAtIndex:shapeIndex];
+        UIColor *lineColor = [self.dataSource drawingView:self lineColorForShapeAtIndex:shapeIndex];
+        
+        [lineColor setStroke];
+        [path stroke];
     }
-}
-
-- (void)setShapes:(NSArray *)shapes
-{
-    _shapes = shapes;
-    [self setNeedsDisplay];
 }
 
 @end
