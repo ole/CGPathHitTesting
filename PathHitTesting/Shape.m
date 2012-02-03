@@ -85,7 +85,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<Shape: %p - Bounds: %@ - Color: %@>", self, NSStringFromCGRect(self.path.bounds), self.lineColor   ];
+    return [NSString stringWithFormat:@"<Shape: %p - Bounds: %@ - Color: %@>", self, NSStringFromCGRect(self.path.bounds), self.lineColor];
 }
 
 
@@ -122,7 +122,7 @@
         return CGRectZero;
     }
     
-    return CGRectInset(self.path.bounds, -self.path.lineWidth, -self.path.lineWidth);
+    return CGRectInset(self.path.bounds, -(self.path.lineWidth + 1.0f), -(self.path.lineWidth + 1.0f));
 }
 
 

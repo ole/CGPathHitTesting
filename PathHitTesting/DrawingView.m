@@ -32,20 +32,25 @@
         indexOfSelectedShape = [self.dataSource indexOfSelectedShapeInDrawingView:self];
     }
     
-    for (NSUInteger shapeIndex = 0; shapeIndex < numberOfShapes; shapeIndex++) {
+    for (NSUInteger shapeIndex = 0; shapeIndex < numberOfShapes; shapeIndex++) 
+    {
         UIBezierPath *path = [self.dataSource drawingView:self pathForShapeAtIndex:shapeIndex];
-        if (CGRectIntersectsRect(rect, CGRectInset(path.bounds, -path.lineWidth, -path.lineWidth))) 
+        if (CGRectIntersectsRect(rect, CGRectInset(path.bounds, -(path.lineWidth + 1.0f), -(path.lineWidth + 1.0f)))) 
         {
             UIColor *lineColor = [self.dataSource drawingView:self lineColorForShapeAtIndex:shapeIndex];
             [lineColor setStroke];
-            
+            [path stroke];
+
             if (shapeIndex == indexOfSelectedShape) {
-                CGFloat dashStyle[] = { 5.0f, 5.0f };
                 UIBezierPath *pathCopy = [path copy];
-                [pathCopy setLineDash:dashStyle count:2 phase:0];
-                [pathCopy stroke];
-            } else {
-                [path stroke];
+                CGPathRef cgPathSelectionRect = CGPathCreateCopyByStrokingPath(pathCopy.CGPath, NULL, pathCopy.lineWidth, pathCopy.lineCapStyle, pathCopy.lineJoinStyle, pathCopy.miterLimit);
+                UIBezierPath *selectionRect = [UIBezierPath bezierPathWithCGPath:cgPathSelectionRect];
+                CGPathRelease(cgPathSelectionRect);
+
+                CGFloat dashStyle[] = { 5.0f, 5.0f };
+                [selectionRect setLineDash:dashStyle count:2 phase:0];
+                [[UIColor blackColor] setStroke];
+                [selectionRect stroke];
             }
         }
     }
