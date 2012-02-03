@@ -12,6 +12,7 @@ typedef enum {
     ShapeTypeRect,
     ShapeTypeEllipse,
     ShapeTypeHouse,
+    ShapeTypeArc,
     SHAPE_TYPE_COUNT
 } ShapeType;
 

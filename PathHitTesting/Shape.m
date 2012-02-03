@@ -19,6 +19,7 @@
 + (UIColor *)randomColor;
 + (CGFloat)randomLineWidth;
 + (UIBezierPath *)houseInRect:(CGRect)bounds;
++ (UIBezierPath *)arcInRect:(CGRect)bounds;
 
 @end
 
@@ -45,6 +46,9 @@
             break;
         case ShapeTypeHouse:
             path = [self houseInRect:bounds];
+            break;
+        case ShapeTypeArc:
+            path = [self arcInRect:bounds];
             break;
         default:
             path = [UIBezierPath bezierPathWithRect:bounds];
@@ -212,6 +216,30 @@
     
     path.lineJoinStyle = kCGLineJoinRound;
 
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    transform = CGAffineTransformTranslate(transform, bounds.origin.x, bounds.origin.y);
+    transform = CGAffineTransformTranslate(transform, 0.0, bounds.size.height);
+    transform = CGAffineTransformScale(transform, 1.0f, -1.0f);
+    transform = CGAffineTransformTranslate(transform, -bounds.origin.x, -bounds.origin.y);
+    [path applyTransform:transform];
+    
+    return path;
+}
+
++ (UIBezierPath *)arcInRect:(CGRect)bounds
+{
+    CGPoint center      = CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds));
+    CGPoint centerRight = CGPointMake(CGRectGetMaxX(bounds), CGRectGetMidY(bounds));
+    CGFloat radius      = CGRectGetWidth(bounds) / 2.0f;
+    CGPoint center2     = CGPointMake(center.x, center.y - radius / 2.0f);
+    
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    [path moveToPoint:centerRight];
+    [path addArcWithCenter:center radius:radius startAngle:0.0f endAngle:M_PI * 1.5f clockwise:YES];
+    [path addArcWithCenter:center2 radius:radius / 2.0f startAngle:M_PI * 1.5f endAngle:M_PI clockwise:YES];
+    
+    path.lineJoinStyle = kCGLineJoinRound;
+    
     CGAffineTransform transform = CGAffineTransformIdentity;
     transform = CGAffineTransformTranslate(transform, bounds.origin.x, bounds.origin.y);
     transform = CGAffineTransformTranslate(transform, 0.0, bounds.size.height);
