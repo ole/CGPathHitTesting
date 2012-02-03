@@ -210,7 +210,7 @@
     [path addLineToPoint:bottomLeft];
     [path addLineToPoint:bottomRight];
     
-    path.lineJoinStyle = kCGLineJoinBevel;
+    path.lineJoinStyle = kCGLineJoinRound;
 
     CGAffineTransform transform = CGAffineTransformIdentity;
     transform = CGAffineTransformTranslate(transform, bounds.origin.x, bounds.origin.y);
